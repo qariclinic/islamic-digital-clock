@@ -29,9 +29,13 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug
 
+      # یہ سٹیپ چیک کرے گا کہ APK اصل میں کس فولڈر میں بنی ہے
+      - name: Find Generated APKs
+        run: find . -name "*.apk"
+
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: warn
+          path: '**/build/outputs/**/*.apk'
+          if-no-files-found: error
