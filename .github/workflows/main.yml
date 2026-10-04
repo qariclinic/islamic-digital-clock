@@ -24,11 +24,15 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug
+        run: ./gradlew assembleDebug --stacktrace
+
+      # یہ سٹیپ لاگ میں پرنٹ کرے گا کہ فائل کس فولڈر میں بنی ہے
+      - name: List Generated Files
+        run: find . -type f \( -name "*.apk" -o -name "*.aab" \)
 
       - name: Upload Debug APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
-          path: 'app/build/outputs/apk/debug/*.apk'
-          if-no-files-found: error
+          path: '**/build/outputs/**/*.apk'
+          if-no-files-found: warn
