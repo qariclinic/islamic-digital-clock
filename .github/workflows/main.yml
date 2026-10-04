@@ -23,16 +23,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+      - name: Build Android Project
+        run: ./gradlew assembleDebug --stacktrace
 
-      # پورے پروجیکٹ میں بننے والی تمام APKs کی لسٹ دیکھنے کے لیے
-      - name: Find output APKs
-        run: find . -type f -name "*.apk"
+      # یہ سٹیپ چیک کرے گا کہ اصل میں کون سی فائلیں (APK, AAR, AAB) بن رہی ہیں
+      - name: Find generated artifacts
+        run: |
+          echo "=== Searching for generated files ==="
+          find . -type f \( -name "*.apk" -o -name "*.aar" -o -name "*.aab" \)
 
-      - name: Upload Debug APK Artifact
+      - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: '**/*.apk'
+          name: app-build-output
+          path: |
+            **/*.apk
+            **/*.aar
+            **/*.aab
           if-no-files-found: error
